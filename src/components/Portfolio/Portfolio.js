@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import MomentUtils from '@date-io/moment';
@@ -8,6 +9,8 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import { TabPanel } from "../common/TabPanel";
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { useSelector } from "react-redux";
+import { isAccountIIS } from "../../store/account.selectors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,7 +37,8 @@ const TABS = { Profit: 0, Composition: 1 };
 export const Portfolio = () => {
   const classes = useStyles();
   const [activeTab, setTab] = useState(TABS.Profit);
-  const [date, setDate] = useState("2020-10-24");
+  const [date, setDate] = useState(moment().add(6, 'month'));
+  const iis = useSelector(isAccountIIS);
 
   return (
     <Box className={classes.root}>
@@ -56,12 +60,12 @@ export const Portfolio = () => {
               className={classes.picker}
               views={["year", "month"]}
               label="Конечная дата расчета"
-              minDate={new Date("2020-09-01")}
-              maxDate={new Date("2021-06-01")}
+              minDate={moment().add(6, 'month')}
+              maxDate={moment().add(3, 'year')}
               value={date}
               onChange={(value) => setDate(value)}
             />
-            <ProfitChart end={date} />
+            <ProfitChart end={date} withTax={!iis}/>
           </MuiPickersUtilsProvider>
         </div>
       </TabPanel>

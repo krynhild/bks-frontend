@@ -10,19 +10,20 @@ import Grid from '@material-ui/core/Grid';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { getAccountTotal } from "../../store/account.selectors";
-import { setTotal } from "../../store/account.actions";
+import { getAccountReinvest, getAccountTotal, isAccountIIS } from "../../store/account.selectors";
+import { setAccountType, setReinvest, setTotal } from "../../store/account.actions";
+import { AccountType } from "../../store/account.types";
 
 const useStyles = makeStyles({
   root: {
-    "margin-bottom": '100px',
+    "margin-bottom": '50px',
+  },
+  block: {
+    "margin-bottom": "50px",
   },
   header: {
     "margin-bottom": "40px",
     "text-align": "left"
-  },
-  rightBox: {
-    "margin-left": "80px"
   },
   typesHeader: {
     "margin-bottom": "25px",
@@ -37,18 +38,20 @@ const getMarks = () => _.map(_.range(0, 1001, 200), num => {
 })
 
 export const Summary = () => {
+  const dispatch = useDispatch();
   const classes = useStyles();
   const total = useSelector(getAccountTotal);
-  const dispatch = useDispatch();
+  const reinvest = useSelector(getAccountReinvest);
+  const iis = useSelector(isAccountIIS);
 
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
-        <Grid item xs={9}>
+        <Grid className={classes.block} item xs={12}>
           <Box className={classes.header} textAlign="left" fontSize="h6.fontSize">Сумма на счету</Box>
           <Slider
-            value={total/1000}
-            onChange={(e, val) => dispatch(setTotal(val*1000))}
+            value={total / 1000}
+            onChange={(e, val) => dispatch(setTotal(val * 1000))}
             min={0}
             max={1000}
             step={50}
@@ -57,24 +60,29 @@ export const Summary = () => {
             valueLabelFormat={num => num ? `${num}K` : num}
           />
         </Grid>
-        <Grid item xs={3}>
-          <Box className={classes.rightBox}>
-            <Box className={classes.typesHeader} textAlign="left" fontSize="h6.fontSize">Тип счета</Box>
+        <Grid item xs={12}>
+          <Box>
+            <Box className={classes.typesHeader} textAlign="left" fontSize="h6.fontSize">Условия инвестирования</Box>
             <FormGroup>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={true}
+                    checked={iis}
+                    onChange={
+                      (event) =>
+                        dispatch(setAccountType(event.target.checked ? AccountType.IIS : AccountType.Broker))
+                    }
                     name="IIS"
                     color="primary"
                   />
                 }
-                label="ИИС"
+                label="Индивидуальный инвестиционный счет"
               />
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={true}
+                    checked={reinvest}
+                    onChange={(event) => dispatch(setReinvest(event.target.checked))}
                     name="Reinvest"
                     color="primary"
                   />
