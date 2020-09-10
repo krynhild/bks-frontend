@@ -1,76 +1,53 @@
-import _ from "lodash";
 import moment from "moment";
 import React from "react";
 import { ResponsiveContainer, AreaChart, XAxis, YAxis, CartesianGrid, Area, Tooltip } from "recharts";
 import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { report, getBondPaymentDates, getChartSlices, hasSliceBondPayment } from "../../lib/report";
-import { GazProm } from "../../store/companies";
-import { Risk } from "../../store/account.types";
+import { profitReport } from "../../lib/profitReport";
 import { getAccountReinvest } from "../../store/account.selectors";
-
-// const data = [
-//   {
-//     "name": "Page A",
-//     "uv": 4000,
-//     "pv": 2400,
-//     "amt": 2400
-//   },
-//   {
-//     "name": "Page B",
-//     "uv": 3000,
-//     "pv": 1398,
-//     "amt": 2210
-//   },
-//   {
-//     "name": "Page C",
-//     "uv": 2000,
-//     "pv": 9800,
-//     "amt": 2290
-//   },
-//   {
-//     "name": "Page D",
-//     "uv": 2780,
-//     "pv": 3908,
-//     "amt": 2000
-//   },
-//   {
-//     "name": "Page E",
-//     "uv": 1890,
-//     "pv": 4800,
-//     "amt": 2181
-//   },
-//   {
-//     "name": "Page F",
-//     "uv": 2390,
-//     "pv": 3800,
-//     "amt": 2500
-//   },
-//   {
-//     "name": "Page G",
-//     "uv": 3490,
-//     "pv": 4300,
-//     "amt": 2100
-//   }
-// ]
-
-const bond = {
-  company: GazProm,
-  purchasePrice: 1000,
-  purchaseDate: 1594764000, // Jul 15 2020
-  sellingPrice: 1000,
-  sellingDate: 1689372000, // Jul 15 2023
-  risk: Risk.AAA,
-  interestRate: 0.06,
-  couponFrequency: 2,
-  quantity: 40
-}
+import { formatCash } from "../../lib/formatCash";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    "margin-left": "-110px"
+    "margin-left": "-20px"
+  },
+  tooltip: {
+    margin: 0,
+    padding: 10,
+    backgroundColor: '#fff',
+    border: '1px solid #ccc',
+  },
+  total: {
+    color: "#82ca9d"
+  },
+  invested: {
+    color: "#8884d8"
   }
 }));
+
+const CustomTooltip = ({ active, payload, label }) => {
+  const classes = useStyles();
+
+  if (active) {
+    return (
+      <>
+        <div className={classes.tooltip}>
+          <div className={classes.tooltipLabel}>{label}</div>
+          <div className={classes.tooltipContent}>
+            <div className={classes.total}>
+              Всего: {formatCash(payload[0].payload.returned + payload[0].payload.invested)}
+            </div>
+            <div className={classes.invested}>
+              В облигациях: {formatCash(payload[0].payload.invested)}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  return null;
+};
 
 export const ProfitChart = ({ end, withTax }) => {
   const classes = useStyles();
@@ -80,7 +57,7 @@ export const ProfitChart = ({ end, withTax }) => {
   const reinvest = useSelector(getAccountReinvest);
   const bonds = useSelector(state => state.bonds);
 
-  const data = report(startDate, endDate, bonds, reinvest, withTax).map(slice => ({
+  const data = profitReport(startDate, endDate, bonds, reinvest, withTax).map(slice => ({
     ...slice,
     total: slice.invested + slice.returned,
     month: slice.date.format("MMM YYYY")
@@ -104,7 +81,7 @@ export const ProfitChart = ({ end, withTax }) => {
           <XAxis dataKey="month" />
           <YAxis />
           <CartesianGrid strokeDasharray="3 3" />
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />} />
           <Area type="monotone" dataKey="total" stroke="#82ca9d" fillOpacity={1} fill="url(#colorPv)" />
           <Area type="monotone" dataKey="invested" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
         </AreaChart>

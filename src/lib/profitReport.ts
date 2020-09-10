@@ -4,7 +4,8 @@ import { Bond } from "../store/account.types";
 export type Slice = {
   date: moment.Moment,
   invested: number,
-  returned: number
+  returned: number,
+  details: Array<object>
 }
 
 export function getCouponValue(
@@ -40,6 +41,25 @@ export function getBondPaymentDates(bond: Bond): Array<moment.Moment> {
   return bondPaymentDates;
 }
 
+export function getChartSlices(start: number, end: number): Array<Slice> {
+  let result: Array<Slice> = [];
+  let date = moment(start * 1000);
+  let endDate = moment(end * 1000);
+
+  while (date.isBefore(endDate)) {
+    result.push({
+      date: date.clone(),
+      invested: 0,
+      returned: 0,
+      details: []
+    });
+
+    date.add(1, 'month');
+  }
+
+  return result;
+}
+
 export function applyBondCoupons(
   bond: Bond,
   slices: Array<Slice>,
@@ -56,29 +76,12 @@ export function applyBondCoupons(
     profitAcc = hasPayment ? profitAcc + couponValue : profitAcc;
 
     return ({
+      ...slice,
       date: slice.date,
       invested: slice.invested + (moment(bond.sellingDate * 1000).isAfter(slice.date) ? bondValue : 0),
       returned: slice.returned + profitAcc + (moment(bond.sellingDate * 1000).isSameOrBefore(slice.date) ? bondValue : 0)
     })
   });
-}
-
-export function getChartSlices(start: number, end: number): Array<Slice> {
-  let result: Array<Slice> = [];
-  let date = moment(start * 1000);
-  let endDate = moment(end * 1000);
-
-  while (date.isBefore(endDate)) {
-    result.push({
-      date: date.clone(),
-      invested: 0,
-      returned: 0
-    });
-
-    date.add(1, 'month');
-  }
-
-  return result;
 }
 
 export const applyBondCouponsWithReinvest = (
@@ -99,6 +102,7 @@ export const applyBondCouponsWithReinvest = (
 
     if (!hasPayment) {
       return ({
+        ...slice,
         date: slice.date,
         invested: slice.invested + bondValue,
         returned: slice.returned + profitAcc
@@ -109,6 +113,7 @@ export const applyBondCouponsWithReinvest = (
     profitAcc = profitAcc + couponValue;
     if (profitAcc < bond.purchasePrice) {
       return ({
+        ...slice,
         date: slice.date,
         invested: slice.invested + bondValue,
         returned: slice.returned + profitAcc
@@ -121,12 +126,14 @@ export const applyBondCouponsWithReinvest = (
     bondValue = bondQuantity * bond.sellingPrice;
 
     return ({
+      ...slice,
       date: slice.date,
       invested: slice.invested + bondValue,
       returned: slice.returned + profitAcc
     })
   });
 }
+
 
 export const basicStrategy = (
   start: number,
@@ -148,7 +155,7 @@ export const reinvestStrategy = (
     applyBondCouponsWithReinvest(bond, slices, withTax), getChartSlices(start, end));
 }
 
-export const report = (
+export const profitReport = (
   start: number,
   end: number,
   bonds: Array<Bond>,

@@ -21,7 +21,7 @@ export const Bonds = () => {
 
   return (
     <div className={classes.root}>
-      <Box className={classes.header} textAlign="left" fontSize="h6.fontSize">Облигации</Box>
+      <Box className={classes.header} textAlign="left" fontSize="h6.fontSize">Ваши облигации</Box>
       <BondList bonds={bonds} />
     </div>
   )

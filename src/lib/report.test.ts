@@ -5,8 +5,8 @@ import {
   applyBondCoupons, applyBondCouponsWithReinvest,
   getBondPaymentDates,
   getChartSlices,
-  hasSliceBondPayment, report,
-} from "./report";
+  hasSliceBondPayment, profitReport,
+} from "./profitReport";
 
 const bond = {
   company: GazProm,
@@ -98,6 +98,6 @@ test("applies bond profits for one bond type with reinvest", () => {
 });
 
 test('applies bond profits for two bond types', () => {
-  const profits = report(1594764000, 1689372000, bonds);
+  const profits = profitReport(1594764000, 1689372000, bonds);
   expect(profits).toMatchSnapshot();
 })
