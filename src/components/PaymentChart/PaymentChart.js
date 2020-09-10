@@ -35,7 +35,9 @@ const CustomTooltip = ({ active, payload, label }) => {
           <div className={classes.tooltipLabel}>{label}</div>
           <div className={classes.tooltipContent}>
             {
-              payload[0].payload.details.map(bond => <div>{bond.name}: {formatCash(bond.returned)}</div>)
+              payload[0].payload.details.map(
+                bond => bond.returned ? <div>{bond.name}: {formatCash(bond.returned)}</div> : null
+              )
             }
           </div>
         </div>

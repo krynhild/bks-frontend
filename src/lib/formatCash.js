@@ -4,4 +4,6 @@ const formatter = new Intl.NumberFormat('ru-RU', {
   maximumSignificantDigits: 6
 });
 
-export const formatCash = (value) => formatter.format(value);
+export const formatCash = (value) => {
+  return formatter.format(value);
+}

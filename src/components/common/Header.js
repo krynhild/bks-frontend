@@ -3,9 +3,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography } from "@material-ui/core";
 
 const useStyles = makeStyles({
-  box: {
-    "margin": "35px 0"
-  },
   stretch: {
     margin: "0 -500px",
     "background": "#3a4fcc"
@@ -29,18 +26,11 @@ export const Header = () => {
   const classes = useStyles();
 
   return (
-    <>
-      <div className={classes.stretch}>
-        <div className={classes.wrapper}>
-          <img alt="logo" src={"logo.svg"} width={26} height={26} />
-          <span className={classes.title}>BCS EXPRESS</span>
-        </div>
+    <div className={classes.stretch}>
+      <div className={classes.wrapper}>
+        <img alt="logo" src={"logo.svg"} width={26} height={26} />
+        <span className={classes.title}>BCS EXPRESS</span>
       </div>
-      <Box className={classes.box} textAlign={"left"}>
-        <Typography variant={"h4"}>
-          Календарь инвестиций
-        </Typography>
-      </Box>
-    </>
+    </div>
   );
 }

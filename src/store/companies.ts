@@ -18,3 +18,17 @@ export const Tinkoff: Company = {
   logo: "https://www.toornament.com/media/file/1536090193804132352/logo_large?v=1529066396",
   description: ""
 }
+
+export const Alfa: Company = {
+  name: "Alfa",
+  url: "https://www.tinkoff.ru/",
+  logo: "https://investments.alfabank.ru/assets/static/media/logo_alfabank_circle.d5629432.png",
+  description: ""
+}
+
+export const SberBank: Company = {
+  name: "SberBank",
+  url: "https://www.tinkoff.ru/",
+  logo: "https://mobinews.online/uploads/sberbank.png",
+  description: ""
+}

@@ -2,8 +2,8 @@ import { Account, AccountType } from "./account.types";
 import { SET_TOTAL, SET_REINVEST, SET_ACCOUNT_TYPE } from "./account.actions";
 
 const initialState: Account = {
-  type: AccountType.Broker,
-  reinvest: true,
+  type: AccountType.IIS,
+  reinvest: false,
   total: 300000
 }
 

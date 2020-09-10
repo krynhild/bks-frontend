@@ -23,7 +23,7 @@ export function applyBondCoupons(
       returned: slice.returned + (hasPayment ? couponValue : 0),
       details: slice.details.concat([{
         name: bond.company.name,
-        returned: hasPayment ? couponValue : undefined
+        returned: hasPayment ? couponValue : 0
       }])
     })
   });

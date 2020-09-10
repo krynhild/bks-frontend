@@ -1,5 +1,5 @@
 import { Risk, Bond } from "./account.types";
-import { GazProm, Tinkoff } from "./companies";
+import { GazProm, Tinkoff, Alfa, SberBank } from "./companies";
 import { AnyAction } from "redux";
 import { ADD_BOND, REMOVE_BOND } from "./bonds.actions";
 
@@ -25,6 +25,28 @@ const initialState: Array<Bond> = [
     interestRate: 0.07,
     couponFrequency: 4,
     quantity: 30
+  },
+  {
+    company: Alfa,
+    purchasePrice: 1500,
+    purchaseDate: 1586901600,
+    sellingPrice: 1500,
+    sellingDate: 1621548000,
+    risk: Risk.AAA,
+    interestRate: 0.1,
+    couponFrequency: 6,
+    quantity: 70
+  },
+  {
+    company: SberBank,
+    purchasePrice: 700,
+    purchaseDate: 1625176800,
+    sellingPrice: 700,
+    sellingDate: 1653084000,
+    risk: Risk.AAA,
+    interestRate: 0.1,
+    couponFrequency: 12,
+    quantity: 20
   }
 ];
 
